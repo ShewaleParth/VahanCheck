@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VahanCheck - License Plate Detection</title>
+    <style>
+        /* Background Image */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow-y: auto; /*  Allows scrolling */
+            background: url('/static/pngtree-collection-of-old-license-plates-on-an-old-wall-image_2671531.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: rgb(0, 234, 255);
+        }
+
+        /* Main Container */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+            padding-top: 20px;
+            background: rgba(17, 17, 17, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #00ffcc;
+            color: black;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #008080;
+            color: white;
+        }
+
+        /* Video and Capture Section */
+        #cameraSection {
+            display: none;
+            margin-top: 15px;
+        }
+
+        video {
+            width: 100%;
+            max-width: 400px;
+            border: 2px solid cyan;
+        }
+
+        img {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Results Box */
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            text-shadow: 0px 0px 10px cyan;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VahanCheck - License Plate Detection</h1>
+
+        <input type="file" id="uploadInput">
+        <button onclick="uploadImage()">Upload Image</button>
+
+        <h2>OR</h2>
+
+        <button onclick="startCamera()">Capture Image</button>
+        <button id="closeCamera" onclick="stopCamera()" style="display:none;">Close Camera</button>
+
+        <div id="cameraSection">
+            <video id="video" autoplay></video>
+            <button onclick="captureImage()">Snap</button>
+        </div>
+        <canvas id="canvas" width="400" height="300" style="display:none;"></canvas>
+
+        <div class="results">
+            <h2>Detection Result</h2>
+            <p id="plateResult">License Plate: Not Detected</p>
+            <p id="stateResult">State: Unknown</p>
+            <p id="facultyResult">Faculty: Unknown</p>  <!-- Added Faculty Details -->
+            <img id="plateImage" src="">
+        </div>
+    </div>
+
+    <script>
+        let videoStream = null;
+
+        function startCamera() {
+            let cameraSection = document.getElementById("cameraSection");
+            let closeCameraBtn = document.getElementById("closeCamera");
+
+            cameraSection.style.display = "block";
+            closeCameraBtn.style.display = "inline";
+
+            let video = document.getElementById("video");
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    videoStream = stream;
+                    video.srcObject = stream;
+                })
+                .catch(error => console.error("Webcam not accessible", error));
+        }
+
+        function stopCamera() {
+            if (videoStream) {
+                let tracks = videoStream.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+            document.getElementById("cameraSection").style.display = "none";
+            document.getElementById("closeCamera").style.display = "none";
+        }
+
+        function uploadImage() {
+            let fileInput = document.getElementById("uploadInput");
+            let formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("plateResult").innerText = "License Plate: " + data.plate_text;
+                document.getElementById("stateResult").innerText = "State: " + data.state;
+                document.getElementById("facultyResult").innerText = "Faculty: " + data.faculty_info;  // Display Faculty Info
+
+                if (data.detected_plate) {
+                    document.getElementById("plateImage").src = data.detected_plate;
+                    document.getElementById("plateImage").style.display = "block";
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function captureImage() {
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
+            let video = document.getElementById("video");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(blob => {
+                let formData = new FormData();
+                formData.append("file", blob, "webcam.jpg");
+
+                fetch("/upload", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("plateResult").innerText = "License Plate: " + data.plate_text;
+                    document.getElementById("stateResult").innerText = "State: " + data.state;
+                    document.getElementById("facultyResult").innerText = "Faculty: " + data.faculty_info;  // Display Faculty Info
+
+                    if (data.detected_plate) {
+                        document.getElementById("plateImage").src = data.detected_plate;
+                        document.getElementById("plateImage").style.display = "block";
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+Faculty Name,Branch,Number Plate
+Dr. Rajesh Kumar,Computer Science,MH-01-AV-8866
+Prof. Anjali Mehta,Electrical Engineering,KA-01-CD-1234
+Dr. Vikram Singh,Mechanical Engineering,MH-12-EF-5678
+Prof. Priya Sharma,Civil Engineering,TN-07-GH-8765
+Dr. Arjun Patel,Electronics and Communication,UP-15-IJ-4321
+Prof. Sneha Reddy,Information Technology,AP-09-KL-6543
+Dr. Rahul Desai,Aerospace Engineering,GJ-03-MN-7890
+Prof. Nandini Rao,Biotechnology,HR-08-OP-3210
+Dr. Sanjay Verma,Chemical Engineering,RJ-14-QR-0987
+Prof. Kavita Joshi,Environmental Science,MP-10-ST-7654
+Dr. Anil Gupta,Artificial Intelligence,PB-04-UV-2345
+Prof. Meena Krishnan,Data Science,WB-02-WX-8765
+Dr. Suresh Nair,Robotics,KL-13-YZ-5432
+Prof. Deepa Iyer,Cyber Security,BR-11-AA-6789
+Dr. Harish Menon,Materials Science,OR-06-BB-9876
+Prof. Ritu Choudhary,Physics,CH-16-CC-1234
+Dr. Karan Malhotra,Mathematics,UK-18-DD-5678
+Prof. Sunita Agarwal,Chemistry,TS-19-EE-8765
+Dr. Manoj Tiwari,Agriculture,AS-20-FF-4321
+Prof. Neha Kapoor,Humanities,JH-17-GG-6543
