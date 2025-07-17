@@ -1,6 +1,5 @@
+flask
+torch
 opencv-python
 easyocr
 pandas
-googletrans==4.0.0-rc1
-numpy
-python-csv
